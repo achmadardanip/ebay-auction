@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Categories
+{% endblock %}
+
+{% block body %}
+  <!-- Navbar -->
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4" style="flex:1 0 auto;">
+    <div class="container wow fadeIn">
+
+      <!-- Heading -->
+      <h2 class="my-5 h2 text-center">Categories</h2>
+      <div class="row mx-auto" style="width: 90%;">
+        {% for i in items %}
+        <div class="col-lg-3 col-md-4" style="margin: 15px 0">
+            <div class="card3 h-100">
+                <a href="{% url 'category' i.category %}">
+                    <img src="{{i.link}}" class="card-img-top" alt="-image"
+                    style="height: 170px; width:100%; object-fit: cover;">
+                <span class="card-title" style="padding: 12px 25px 0;">{{i.category}}</span>
+            
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    
+    </div>
+
+
+    </div>
+  </main>
+  <!--Main layout-->
+  {% endblock %}

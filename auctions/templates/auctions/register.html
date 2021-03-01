@@ -1,0 +1,99 @@
+{% extends "auctions/layout.html" %}
+{% block title %}
+Register
+{% endblock %}
+
+{% block body %}
+
+  <!-- Navbar -->
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container wow fadeIn">
+
+      <!-- Heading -->
+      <h2 class="my-5 h2 text-center">Register</h2>
+      
+      <!--Grid row-->
+      
+        <!--Grid column-->
+        <div class="col-md-12 mb-4">
+            <div class="row">
+                
+          <!--Card-->
+          <div class="card mx-auto" style="margin: 0 auto; float: none; margin-bottom: 10px; width: 50%;">
+
+            <!--Card content-->
+            <form class="card-body" action="{% url 'register' %}" method="POST">
+                {% if message %}
+                <div class="alert alert-danger">
+                  {{ message }}
+                </div>
+              {% endif %}
+              {% csrf_token %}
+              <!--Grid row-->
+
+
+                <!--Grid column-->
+
+
+                  <!--firstName-->
+                  <div class="md-form ">
+                    <input type="text" id="username" name="username" class="form-control" required>
+                    <label for="username" class="">Username *</label>
+                  </div>
+
+                <!--Grid column-->
+                <!--Grid column-->
+
+              <!--Grid row-->
+
+              <div class="md-form ">
+                <input type="email" id="email" name="email" class="form-control" required>
+                <label for="email" class="">Email *</label>
+              </div>
+
+              <div class="md-form ">
+                <input type="password" id="password" name="password" class="form-control" required>
+                <label for="password" class="">Password *</label>
+              </div>
+              <!--address-->
+              <div class="md-form mb-5">
+                <div class="md-form ">
+                  <input type="password" name="confirmation" class="form-control" required>
+                  <label for="repassword" class="">Retype Password *</label>
+                </div>
+                
+              </div>
+
+              <!--address-2-->
+              <!-- <div class="md-form mb-5">
+                <input type="text" id="address-2" class="form-control" placeholder="Apartment or suite">
+                <label for="address-2" class="">Address 2 (optional)</label>
+              </div> --> 
+
+              <!--Grid row-->
+
+              <button class="btn btn-primary btn-lg btn-block" type="submit">Register</button>
+              <br>
+              <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+
+            </form>
+
+          </div>
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+    </div>
+  </main>
+  <!--Main layout-->
+  {% endblock %}
+

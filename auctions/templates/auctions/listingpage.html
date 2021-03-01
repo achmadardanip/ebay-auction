@@ -1,0 +1,431 @@
+
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+  Product Details
+{% endblock %}
+
+{% block body %}
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+      <h2 class="my-5 h2 text-center">Product Details</h2>
+      {% if addwatchlist %}
+        <div class="alert alert-success">
+          {{addwatchlist}}
+        </div>
+      {% endif %}
+      {% if removewatchlist %}
+        <div class="alert alert-success">
+          {{removewatchlist}}
+        </div>
+      {% endif %}
+
+      {% if error %}
+      <div class="alert alert-danger">
+          {{error}}
+      </div>
+      {% endif %}
+      {% if success %}
+      <div class="alert alert-success">
+          {{success}}
+      </div>
+      {% endif %}
+      <!--Grid row-->
+      <!--Section: Block Content-->
+      <section class="mb-5">
+
+        <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+
+            <div id="mdb-lightbox-ui"></div>
+
+            <div class="mdb-lightbox">
+
+              <div class="row product-gallery mx-1">
+
+                <div class="col-12 mb-0">
+                  <figure class="view overlay rounded z-depth-1 main-img">
+                    <a href="{{i.link}}"
+                      data-size="710x823">
+                      <img src="{{i.link}}"
+                        class="img-fluid z-depth-1">
+                    </a>
+                  </figure>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="col-md-5">
+
+            <h5 style="font-weight: bold;">{{i.title}}</h5>
+            <hr>
+            <!-- <p class="mb-2 text-muted text-uppercase small">{% if i.category is None %} No category {% else %} {{i.category}} {% endif %}</p> -->
+            <!-- <p class="pt-1">{{i.description}}</p> -->
+            <div class="table-responsive">
+              <table class="table table-sm table-borderless mb-0">
+                <tbody>
+                  <!-- <tr>
+                    <th class="pl-0 w-25" scope="row"><strong>Listed By:</strong></th>
+                    <td>{{i.owner}}</td>
+                  </tr> -->
+                  <tr>
+                    <th class="pl-0 w-25" scope="row"><strong>Condtion:</strong></th>
+                    <td>{{i.condition}}</td>
+                  </tr>
+                  <tr>
+                    <th class="pl-0 w-25" scope="row"><strong>Category:</strong></th>
+                    <td>{% if i.category is None %} No category {% else %} {{i.category}} {% endif %}</td>
+                  </tr>
+                  <tr>
+                    <!-- <th></th> -->
+                    <td colspan="3">
+                      <div class=" rounded" style="background-color: #ececec;">
+                        <p class="lead" style="padding-left: 10px; padding-top: 10px;">
+                          {% if bcount == 0 %}
+                          <span class="mr-1">
+                            Starting Bid:
+                          </span>
+                          <a href="#" data-toggle="modal" data-target="#exampleModal" ><span><b style="font-weight: bold;">${{i.price}}</b>&nbsp; &nbsp;<span class="badge blue">0 Bid</span></span></a>
+                          {% else %}
+                          <span class="mr-1">
+                            Current Bid:
+                          </span>
+                          <a href="#" data-toggle="modal" data-target="#exampleModal"><span><b style="font-weight: bold;">${{i.price}}</b>&nbsp; &nbsp;<span class="badge blue">{{bcount}} Bids</span></span></a>
+                          {% endif %}
+                        </p>
+                      {% if user.username %}
+                      <form class="d-flex justify-content-left" style="padding-left:10px;" method="POST" action="{% url 'bidsubmit' i.id %}">
+                        <!-- Default input -->
+                        {% csrf_token %}
+                        {% if bcount == 0 %}
+                        <input type="number" name="bid" step=".01" id="bid" aria-label="Search" class="form-control" style="width: 100px" min="{{i.price}}" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187" required>
+                        {% else %}
+                        <input type="number" name="bid" step=".01" id="bid" aria-label="Search" class="form-control" style="width: 100px"  onkeydown="return event.keyCode !== 69 && event.keyCode !== 189 && event.keyCode !== 187" required>
+                        {% endif %}
+                        <button class="btn btn-primary btn-md my-0 p" type="submit"><b style="font-weight: bold;">Place bid</b>
+                          <i class="fa fa-gavel ml-1"></i>
+                        </button>
+                        
+              
+                      </form>
+                      {% endif %}
+                      {% if bcount == 0 %}
+                      <p style="padding-top: 5px; padding-left: 10px;">Enter USD {{i.price}} or more</p>
+                      {% else %}
+                      <p style="padding-top: 5px; padding-left: 10px;">Enter more than USD {{i.price}}</p>
+                      {% endif %}
+                      {% if user.username %}
+                      {% if added %}
+                        <a href="{% url 'removewatchlist' i.id %}"><button type="button" class="btn btn-primary btn-sm btn-block"><b style="font-weight: bold;"><i class="fa fa-eye-slash" aria-hidden="true"></i>&nbsp;&nbsp;Remove from Watchlist</b></button></a>
+                      {% else %}
+                        <a href="{% url 'addwatchlist' i.id %}"<button type="button" class="btn btn-primary btn-sm btn-block"><b style="font-weight: bold;"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;&nbsp;Add to Watchlist</b></button></a>
+                      {% endif %}
+                      {% endif %}
+                      {% if user.username %}
+                      {% if owner %}
+                      <a href="{% url 'closebid' i.id %}"><button type="button" class="btn btn-danger btn-sm btn-block" onclick="return confirm('Are you sure you want to close this bid?');"><b style="font-weight: bold;"><i class="fas fa-times-circle" aria-hidden="true"></i>&nbsp;&nbsp;Close Bid</b></button></a>
+                      {% endif %}
+                      {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="pl-0 w-25" scope="row"><strong>Shipping:</strong></th>
+                    <td><strong>$17.32 (approx. IDR240,555.56)</strong> International Priority Shipping to Indonesia  via the Global Shipping Program | <a href="#">See details</a></td>
+                  </tr>
+                  <tr>
+                    <th class="pl-0 w-25" scope="row"><strong>Delivery:</strong></th>
+                    <td>Estimated between <strong>Fri. Mar. 12 and Wed. Mar. 24</strong></td>
+                  </tr>
+                  <tr>
+                    <th class="pl-0 w-25" scope="row"><strong>Payments:</strong></th>
+                    <td>
+                      <span>
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                        <i class="fab fa-cc-paypal"></i>
+                        <i class="fab fa-cc-amex"></i>
+                        <i class="fab fa-cc-apple-pay"></i>
+                        <i class="fab fa-google-pay"></i>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="pl-0 w-25" scope="row"><strong>Returns</strong></th>
+                    <td>Seller does not accept returns | <a href="#">See details</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col-md-3 mb-4">
+  
+            <!-- Cart -->
+            <div class="card rounded mb-3 z-depth-1">
+              <div class="card-body d-flex justify-content-between lh-condensed">
+                <div>
+                  <h6 class="my-0" style="font-weight: bold;">Shop with confidence</h6>
+                    <div class="row">
+                    <div class="col-2" style="padding-top: 10px;">
+                      <i class="fas fa-shield-alt" style="font-size: 28px" aria-hidden="true"></i>
+                    </div>
+                  <div class="message-wrapper col-10">
+                  <div class="s" style="font-size: 14px;">
+                  <small>eAuction Money Back Guarantee</small>
+                  </div>
+                  <div clas="t" style="line-height: 1; font-size: 13px;">
+                  <small class="text-muted">Get the item you ordered or get your money back. <a hre="#">Learn more</a></small>
+                </div>
+                </div>
+                </div>
+                </div>
+              </div>
+            </div>
+            <!-- Cart -->
+  
+            <!-- Promo code -->
+            <div class="card rounded mb-3 z-depth-1">
+              <div class="card-body d-flex justify-content-between lh-condensed">
+                <div>
+                  <h6 class="my-0" style="font-weight: bold;">Seller information</h6>
+                    <div class="row">
+                  <div class="message-wrapper col-md-12">
+                  <div class="s" style="font-size: 14px; font-weight:bold; color: #0654ba !important;">
+                  {{i.owner}}
+                  </div>
+                  <hr>
+                  <div clas="t" style="line-height: 1; font-size: 13px;">
+                    <i class="far fa-heart" style="color:#0654ba;"></i>&nbsp;&nbsp;<a href="#">Save this seller</a>
+                </div>
+                <div clas="t" style="line-height: 3; font-size: 13px;">
+                  <a href="#">Contact seller</a>
+              </div>
+              <div clas="t" style="line-height: 1; font-size: 13px;">
+                <a href="#">Save this seller</a>
+            </div>
+                
+                </div>
+                </div>
+                </div>
+              </div>
+            </div>
+            <!-- Promo code -->
+  
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Block Content-->
+      <!--Grid row-->
+
+      <hr>
+
+      <div class="row d-flex justify-content-center wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-6 text-center">
+
+          <h4 class="my-4 h4">Description</h4>
+
+          <p>{{i.description}}</p>
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <hr>
+
+      <div class="row d-flex justify-content-center wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-6 text-center">
+
+          <h4 class="my-4 h4">Comments</h4>
+
+        </div>
+        <!--Grid column-->
+        <div class="container">
+          <div class="row bootstrap snippets bootdeys">
+            <div class="col-md-8 col-sm-12">
+              <div class="comment-wrapper">
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    Comment Panel
+                  </div>
+                  <div class="panel-body">
+                    {% if user.username %}
+                    <form action="{% url 'submitcomment' i.id %}" method="POST">
+                    {% csrf_token %}
+                    <textarea class="form-control" name="comment" placeholder="write a comment..." rows="3"></textarea>
+                    <br>
+                    <button type="submit" class="btn btn-info pull-right">Post</button>
+                    </form>
+                    {% endif %}
+                    <div class="clearfix"></div>
+                    <hr>
+                    <ul class="media-list">
+                      {% if comments %}
+                      {% for c in comments %}
+                      <li class="media">
+                        <a href="#" class="pull-left">
+                          <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                        </a>
+                        <div class="media-body" style="padding-left: 20px;">
+                          <strong class="text-success">{{c.user}}</strong>
+                          <p>
+                            {{c.comment}}
+                          </p>
+                          <p class="text-muted">
+                            <small class="text-muted">{{c.time}}</small>
+                          </p>
+                        </div>
+                      </li>
+                      {% endfor %}
+                      {% else %}
+                      
+                      <div class="col-md-6 text-center">
+
+                        <h4 class="my-4">No comments yet</h4>
+              
+                      </div>
+                      {% endif %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr>
+
+
+      <!--Grid row-->
+      <div class="row d-flex justify-content-center wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-6 text-center">
+
+          <h4 class="my-4 h4">Related Products</h4>
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+      <br>
+      <!--Grid row-->
+      <section class="text-center">
+      <div class="row wow fadeIn">
+        {% for i in relatedprod %}
+        <!--Grid column-->
+        <div class="col-lg-4 col-md-12 mb-4">
+
+          <!-- <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt=""> -->
+          <div class="card">
+
+            <!--Card image-->
+            <div class="view overlay">
+              <img src="{{i.link}}" class="card-img-top"
+                alt="">
+              <a href="{% url 'listingpage' i.id %}">
+                <div class="mask rgba-white-slight"></div>
+              </a>
+            </div>
+            <!--Card image-->
+
+            <!--Card content-->
+            <div class="card-body text-center">
+              <!--Category & Title-->
+              <a href="{% url 'listingpage' i.id %}" class="grey-text">
+                <h5>{{i.category}}</h5>
+              </a>
+              <h5>
+                <strong>
+                  <a href="{% url 'listingpage' i.id %}" class="dark-grey-text">{{i.title}}
+                  </a>
+                </strong>
+              </h5>
+
+              <h4 class="font-weight-bold blue-text">
+                <strong>${{i.price}}</strong>
+              </h4>
+              <p>d{{i.description}}</p>
+              <p class="card-text"><small class="text-muted">Listed on: {{i.time}}</small></p>
+            </div>
+          </div>
+
+        </div>
+        {% empty %}
+        <div class="col-md-12">
+          <h4 class="title text-dots">No active listing found</h4>
+          <br>
+      </div>
+        {% endfor %}
+        <!--Grid column-->
+
+        <!--Grid column-->
+
+      </div>
+    </section>
+      <!--Grid row-->
+
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Bid History</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table" id="tabel">
+              <thead>
+                <tr>
+                  <th scope="col">Bidder</th>
+                  <th scope="col">Bid Amount</th>
+                  <th scope="col">Bid Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for b in bidders %}
+                <tr>
+                  <td>{{b.user}}</td>
+                  <td>${{b.bid}}</td>
+                  <td>{{b.time}}</td>
+                </tr>
+                {% empty %}
+                <tr id="no-data">
+                <td colspan="3" style="text-align: center;">No data</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    var myTable = document.getElementById('tabel');
+    var rows =  myTable.rows;
+    var firstRow = rows[1];
+    firstRow.classList.add("table-success");
+
+    var nodata = document.getElementById("no-data");
+    nodata.classList.remove("table-success");
+
+
+  </script>
+  <!--Main layout-->
+  {% endblock %}
